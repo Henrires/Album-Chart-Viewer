@@ -166,4 +166,10 @@ async function copyToClipboard(text) {
 const copyBtn = document.getElementById("modal-copy-btn")
 copyBtn.addEventListener("click", () => {
   copyToClipboard(document.getElementById("modal-output").value)
+
+  document.getElementById("modal-copy-btn").textContent = "Copied!"
+  // doesnt block
+  setTimeout(() => {
+    document.getElementById("modal-copy-btn").textContent = "Copy"
+  }, 1000);
 })
