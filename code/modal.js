@@ -153,3 +153,17 @@ createBtn.addEventListener("click", () => {
 modalClose.addEventListener("click", () =>
   document.querySelector(".editor-modal").classList.add("hidden")
 );
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (err) {
+    alert("Something went wrong while trying to copy.")
+  }
+}
+
+// copy
+const copyBtn = document.getElementById("modal-copy-btn")
+copyBtn.addEventListener("click", () => {
+  copyToClipboard(document.getElementById("modal-output").value)
+})
