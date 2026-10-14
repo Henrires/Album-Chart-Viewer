@@ -129,6 +129,11 @@ const createBtn = document.getElementById("create-btn")
 const downloadBtn = document.getElementById("modal-download-btn")
 
 downloadBtn.addEventListener("click", () => {
+  if (!modalAlbumData) { // safe callback
+    alert("No input detected. Please provide a valid JSON string.")
+    return
+  }
+
   const blob = new Blob([JSON.stringify(modalAlbumData, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -148,6 +153,7 @@ const modalClose = document.getElementById("modal-close")
 
 createBtn.addEventListener("click", () => {
   document.querySelector(".editor-modal").classList.remove("hidden");
+  renderOutput() // leave output with something
 });
 
 modalClose.addEventListener("click", () =>
