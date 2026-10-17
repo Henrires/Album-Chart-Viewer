@@ -2,7 +2,6 @@ let curTheme = "dark-theme"
 let transitionAdded = false; // track
 
 document.getElementById("dark-or-light-btn").addEventListener("click", () => {
-  console.log("clicked!");
 
   if (curTheme === "dark-theme") {
     curTheme = "light-theme";

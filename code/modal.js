@@ -21,7 +21,7 @@ function renderOutput() {
     artist: document.getElementById("modal-artist").value,
     year: Number(document.getElementById("modal-year").value) || null,
     coverArt: document.getElementById("modal-coverArt").value || null,
-    version: 1,
+    schemaVersion: 1,
     tracks,
     notes
   };
@@ -36,7 +36,7 @@ function updateModal(album) {
     document.getElementById("modal-artist").value = album.artist,
     document.getElementById("modal-year").value = album.year,
     document.getElementById("modal-coverArt").value = album.coverArt,
-    version = album.version;
+    schemaVersion = album.schemaVersion;
 
   for (const currentSong of album.tracks) {
     const position = currentSong.position
