@@ -9,7 +9,7 @@ function renderOutput() {
       name: row.querySelector(".t.name").value,
       rating: rating === "" ? null : Number(rating)
     };
-  });
+  }).filter(t => t.name.trim() !== "");;
 
   const notes = [...modalNotes.querySelectorAll(".n-text")]
     .map(i => i.value) // pass i get i.value
@@ -32,11 +32,12 @@ function renderOutput() {
 
 // when we create, to update modal
 function updateModal(album) {
-  document.getElementById("modal-title").value = album.title,
-    document.getElementById("modal-artist").value = album.artist,
-    document.getElementById("modal-year").value = album.year,
-    document.getElementById("modal-coverArt").value = album.coverArt,
-    schemaVersion = album.schemaVersion;
+  clearNotesAndTracks() // avoid stacking bug
+
+  document.getElementById("modal-title").value = album.title;
+  document.getElementById("modal-artist").value = album.artist;
+  document.getElementById("modal-year").value = album.year;
+  document.getElementById("modal-coverArt").value = album.coverArt;
 
   for (const currentSong of album.tracks) {
     const position = currentSong.position
@@ -62,11 +63,14 @@ function addTrackRow(position, name, rating) {
   const row = document.createElement("div");
   row.className = "track-row";
   row.innerHTML = `
-    <input class="t pos" type="number" placeholder="#" value="${position ?? modalTracks.children.length + 1}">
-    <input class="t name" placeholder="Track name" value="${name ?? ""}">
-    <input class="t rating" type="number" step="0.1" placeholder="Rating" value="${rating ?? ""}">
-    <button class="remove-btn">✕</button>
-  `;
+  <input class="t pos" type="number" placeholder="#">
+  <input class="t name" placeholder="Track name">
+  <input class="t rating" type="number" step="0.1" placeholder="Rating">
+  <button class="remove-btn">✕</button>
+`;
+  row.querySelector(".pos").value = position ?? modalTracks.children.length + 1;
+  row.querySelector(".name").value = name ?? "";
+  row.querySelector(".rating").value = rating ?? "";
 
   // when clicked remove
   row.querySelector(".remove-btn").addEventListener("click", () => { // () parameter
@@ -99,6 +103,11 @@ function addNoteRow(text) {
 
   row.querySelector("input").addEventListener("input", renderOutput);
   modalNotes.appendChild(row);
+}
+
+function clearNotesAndTracks() {
+  document.querySelectorAll(".track-row, .note-row").forEach(row => row.remove());
+  renderOutput();
 }
 
 // interactions / connections
@@ -140,7 +149,7 @@ downloadBtn.addEventListener("click", () => {
   a.href = url;
   a.download = (modalAlbumData.title || "album") + ".json";
   a.click();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 1000); // mobile
 });
 
 // after ended
@@ -153,6 +162,7 @@ const modalClose = document.getElementById("modal-close")
 
 createBtn.addEventListener("click", () => {
   document.querySelector(".editor-modal").classList.remove("hidden");
+  if (curAlbum) updateModal(curAlbum);
   renderOutput() // leave output with something
 });
 
@@ -163,19 +173,20 @@ modalClose.addEventListener("click", () =>
 async function copyToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
+    return true;
   } catch (err) {
-    alert("Something went wrong while trying to copy.")
+    alert("Something went wrong while trying to copy.");
+    return false;
   }
 }
 
-// copy
-const copyBtn = document.getElementById("modal-copy-btn")
-copyBtn.addEventListener("click", () => {
-  copyToClipboard(document.getElementById("modal-output").value)
+// copy to clipboard
+copyBtn.addEventListener("click", async () => {
+  const ok = await copyToClipboard(document.getElementById("modal-output").value);
+  if (!ok) return;
 
-  document.getElementById("modal-copy-btn").textContent = "Copied!"
-  // doesnt block
+  copyBtn.textContent = "Copied!";
   setTimeout(() => {
-    document.getElementById("modal-copy-btn").textContent = "Copy"
+    copyBtn.textContent = "Copy";
   }, 1000);
 })
