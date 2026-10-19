@@ -9,7 +9,7 @@ function renderOutput() {
       name: row.querySelector(".t.name").value,
       rating: rating === "" ? null : Number(rating)
     };
-  });
+  }).filter(t => t.name.trim() !== "");;
 
   const notes = [...modalNotes.querySelectorAll(".n-text")]
     .map(i => i.value) // pass i get i.value
@@ -149,7 +149,7 @@ downloadBtn.addEventListener("click", () => {
   a.href = url;
   a.download = (modalAlbumData.title || "album") + ".json";
   a.click();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 1000); // mobile
 });
 
 // after ended
@@ -162,6 +162,7 @@ const modalClose = document.getElementById("modal-close")
 
 createBtn.addEventListener("click", () => {
   document.querySelector(".editor-modal").classList.remove("hidden");
+  if (curAlbum) updateModal(curAlbum);
   renderOutput() // leave output with something
 });
 
@@ -172,19 +173,20 @@ modalClose.addEventListener("click", () =>
 async function copyToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
+    return true;
   } catch (err) {
-    alert("Something went wrong while trying to copy.")
+    alert("Something went wrong while trying to copy.");
+    return false;
   }
 }
 
-// copy
-const copyBtn = document.getElementById("modal-copy-btn")
-copyBtn.addEventListener("click", () => {
-  copyToClipboard(document.getElementById("modal-output").value)
+// copy to clipboard
+copyBtn.addEventListener("click", async () => {
+  const ok = await copyToClipboard(document.getElementById("modal-output").value);
+  if (!ok) return;
 
-  document.getElementById("modal-copy-btn").textContent = "Copied!"
-  // doesnt block
+  copyBtn.textContent = "Copied!";
   setTimeout(() => {
-    document.getElementById("modal-copy-btn").textContent = "Copy"
+    copyBtn.textContent = "Copy";
   }, 1000);
 })
