@@ -9,7 +9,7 @@
     /* rating tiers — swap these to reskin the whole list */
     --cinema: #1DA1F2;
     /* blue, faintly cyan — 9.7+ */
-    --cinema-text: #ffffff;
+    --cinema-text: #06202e;
     --awesome: #186A3B;
     --awesome-text: #f2f0ea;
     --great: #28B463;
@@ -21,12 +21,11 @@
     --bad: #E74C3C;
     --bad-text: #2a0808;
     --garbage: #633974;
+    --garbage-text: #f2f0ea;
     /* muted purple — below 3.0 */
 
     --empty: #AEAEAE;
     --empty-text: #FFFFFF;
-
-    --garbage-text: #f2f0ea;
 
     --radius: 10px;
     --font-display: 'Montserrat', 'Arial Narrow', sans-serif;
@@ -44,7 +43,7 @@
     /* rating tiers — swap these to reskin the whole list */
     --cinema: #2f7d8f;
     /* blue, faintly cyan — 9.7+ */
-    --cinema-text: #ffffff;
+    --cinema-text: #06202e;
     --awesome: #1c8a4c;
     --awesome-text: #ffffff;
     --great: #3fb46a;
