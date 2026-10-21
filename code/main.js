@@ -32,7 +32,13 @@ function isValidAlbum(album) {
     (Array.isArray(album.notes) &&
       album.notes.every(note => typeof note === "string"));
 
-  return tracksValid && notesValid;
+  // ratedOn can be omitted or a valid date string
+  const ratedOnValid =
+  album.ratedOn === undefined ||
+  (typeof album.ratedOn === "string" &&
+    !isNaN(Date.parse(album.ratedOn)));
+
+  return tracksValid && notesValid && ratedOnValid;
 }
 
 function renderAlbum(album) {
