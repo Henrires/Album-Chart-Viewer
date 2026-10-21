@@ -178,6 +178,13 @@ modalClose.addEventListener("click", () =>
   document.querySelector(".editor-modal").classList.add("hidden")
 );
 
+const editorModal = document.querySelector(".editor-modal");
+editorModal.addEventListener("click", e => { // hide if touching outside box
+  if (e.target === editorModal) {
+    editorModal.classList.add("hidden");
+  }
+});
+
 async function copyToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
