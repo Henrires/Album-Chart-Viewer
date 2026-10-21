@@ -1,10 +1,11 @@
-# 1
+# 2
 ```json
 {
   "type": string, // Must be "Album"
   "title": string,
   "artist": string,
   "year": integer,
+  "ratedOn": string, // ISO 8601 date: YYYY-MM-DD
   "coverArt": string, // URL of the album cover image
   "schemaVersion": integer,
   "tracks": [
@@ -16,14 +17,13 @@
 }
 ```
 
-# 2
+# 1
 ```json
 {
   "type": string, // Must be "Album"
   "title": string,
   "artist": string,
   "year": integer,
-  "ratedOn": string, // ISO 8601 date: YYYY-MM-DD
   "coverArt": string, // URL of the album cover image
   "schemaVersion": integer,
   "tracks": [
