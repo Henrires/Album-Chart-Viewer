@@ -20,8 +20,9 @@ function renderOutput() {
     title: document.getElementById("modal-title").value,
     artist: document.getElementById("modal-artist").value,
     year: Number(document.getElementById("modal-year").value) || null,
+    ratedOn: document.getElementById("modal-ratedOn").value || new Date().toISOString().slice(0, 10),
     coverArt: document.getElementById("modal-coverArt").value || null,
-    schemaVersion: 1,
+    schemaVersion: 2,
     tracks,
     notes
   };
@@ -38,6 +39,7 @@ function updateModal(album) {
   document.getElementById("modal-artist").value = album.artist;
   document.getElementById("modal-year").value = album.year;
   document.getElementById("modal-coverArt").value = album.coverArt;
+  document.getElementById("modal-ratedOn").value = album.ratedOn || new Date().toISOString().slice(0, 10);
 
   for (const currentSong of album.tracks) {
     const position = currentSong.position
@@ -53,7 +55,7 @@ function updateModal(album) {
 }
 
 // when each change call renderOutput()
-["modal-title", "modal-artist", "modal-year", "modal-coverArt"].forEach(id =>
+["modal-title", "modal-artist", "modal-year", "modal-coverArt", "modal-ratedOn"].forEach(id =>
   document.getElementById(id).addEventListener("input", renderOutput)
 );
 
@@ -162,8 +164,14 @@ const modalClose = document.getElementById("modal-close")
 
 createBtn.addEventListener("click", () => {
   document.querySelector(".editor-modal").classList.remove("hidden");
-  if (curAlbum) updateModal(curAlbum);
-  renderOutput() // leave output with something
+
+  if (curAlbum) {
+    updateModal(curAlbum);
+  } else {
+    document.getElementById("modal-ratedOn").value =
+      new Date().toISOString().slice(0, 10);
+    renderOutput();
+  }
 });
 
 modalClose.addEventListener("click", () =>
@@ -181,6 +189,7 @@ async function copyToClipboard(text) {
 }
 
 // copy to clipboard
+const copyBtn = document.getElementById("modal-copy-btn");
 copyBtn.addEventListener("click", async () => {
   const ok = await copyToClipboard(document.getElementById("modal-output").value);
   if (!ok) return;

@@ -55,6 +55,9 @@ function renderAlbum(album) {
   document.getElementById("album-year").textContent =
     album.year || "";
 
+  document.getElementById("album-ratedOn").textContent =
+    album.ratedOn || "";
+
   // overall score
   // ONLY actual numbers are included
   const rated = (album.tracks || []).filter(

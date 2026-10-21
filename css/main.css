@@ -138,6 +138,12 @@
     margin-top: 2px;
   }
 
+  .meta .rated-on {
+    color: var(--text-dim);
+    font-size: .90em;
+    margin-top: 2px;
+  }
+
   /* ---------- right: legend + tracklist ---------- */
   .legend {
     display: flex;
