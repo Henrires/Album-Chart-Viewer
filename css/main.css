@@ -131,18 +131,15 @@
     font-weight: 600;
     color: var(--text);
   }
-
-  .meta .year {
-    color: var(--text-dim);
-    font-size: .95rem;
-    margin-top: 2px;
-  }
-
-  .meta .rated-on {
+  
+  .meta .year,
+  .meta .rated-on,
+  .meta .rated-by {
     color: var(--text-dim);
     font-size: .90em;
     margin-top: 2px;
   }
+
 
   /* ---------- right: legend + tracklist ---------- */
   .legend {

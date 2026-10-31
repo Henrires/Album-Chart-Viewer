@@ -21,8 +21,9 @@ function renderOutput() {
     artist: document.getElementById("modal-artist").value,
     year: Number(document.getElementById("modal-year").value) || null,
     ratedOn: document.getElementById("modal-ratedOn").value || new Date().toISOString().slice(0, 10),
+    ratedBy: document.getElementById("modal-ratedBy").value || null,
     coverArt: document.getElementById("modal-coverArt").value || null,
-    schemaVersion: 2,
+    schemaVersion: 3,
     tracks,
     notes
   };
@@ -40,6 +41,7 @@ function updateModal(album) {
   document.getElementById("modal-year").value = album.year;
   document.getElementById("modal-coverArt").value = album.coverArt;
   document.getElementById("modal-ratedOn").value = album.ratedOn || new Date().toISOString().slice(0, 10);
+  document.getElementById("modal-ratedBy").value = album.ratedBy || "";
 
   for (const currentSong of album.tracks) {
     const position = currentSong.position
@@ -55,7 +57,7 @@ function updateModal(album) {
 }
 
 // when each change call renderOutput()
-["modal-title", "modal-artist", "modal-year", "modal-coverArt", "modal-ratedOn"].forEach(id =>
+["modal-title", "modal-artist", "modal-year", "modal-coverArt", "modal-ratedOn", "modal-ratedBy"].forEach(id =>
   document.getElementById(id).addEventListener("input", renderOutput)
 );
 
@@ -127,11 +129,7 @@ document.getElementById("modal-add-track").addEventListener("click", () => {
 const modalSave = document.getElementById("modal-save-btn")
 modalSave.addEventListener("click", () => {
   renderOutput();
-  if (!isValidAlbum(modalAlbumData)) {
-    alert("Your json is invalid.")
-    return;
-  }
-  renderAlbum(modalAlbumData);
+  renderAlbum(modalAlbumData); 
   document.querySelector(".editor-modal").classList.add("hidden");
 });
 

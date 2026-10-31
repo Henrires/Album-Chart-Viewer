@@ -1,4 +1,4 @@
-Current (2)
+Current (3)
 ```json
 {
   "type": string, 
@@ -6,6 +6,7 @@ Current (2)
   "artist": string,
   "year": integer,
   "ratedOn": string, 
+  "ratedBy": string,
   "coverArt": string, 
   "schemaVersion": integer,
   "tracks": [
@@ -18,6 +19,11 @@ Current (2)
 ```
 
 ---
+
+2 → 3
+```diff
++ "ratedBy": string, // Preferably use Twitter (X) handle, or any username.
+```
 
 1 → 2
 ```diff

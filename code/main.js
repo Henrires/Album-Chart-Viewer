@@ -11,37 +11,49 @@ function tier(v) {
   return "garbage";
 }
 
-function isValidAlbum(album) {
-  if (!album || typeof album !== "object") return false;
-  if (typeof album.type !== "string") return false;
-  if (!Array.isArray(album.tracks)) return false;
-  if (typeof album.title !== "string") return false;
-  if (typeof album.artist !== "string") return false;
-  if (!Number.isInteger(album.year)) return false;
+function sanitizeAlbum(album) {
+  const src = album && typeof album === "object" ? album : {};
 
-  const tracksValid = album.tracks.every(t =>
-    (typeof t.rating === "number" || typeof t.rating === "string") &&
-    typeof t.position === "number" &&
-    typeof t.name === "string" &&
-    t.name.length > 0
-  );
+  const str = (v, fallback) => (typeof v === "string" ? v : fallback);
 
-  // notes can be omitted, null, or an array of strings
-  const notesValid =
-    !album.notes ||
-    (Array.isArray(album.notes) &&
-      album.notes.every(note => typeof note === "string"));
+  const tracks = (Array.isArray(src.tracks) ? src.tracks : []).map((t, i) => {
+    const track = t && typeof t === "object" ? t : {};
+    const raw = typeof track.rating === "string"
+      ? parseFloat(track.rating)
+      : track.rating;
 
-  // ratedOn can be omitted or a valid date string
-  const ratedOnValid =
-  album.ratedOn === undefined ||
-  (typeof album.ratedOn === "string" &&
-    !isNaN(Date.parse(album.ratedOn)));
+    return {
+      position: typeof track.position === "number" ? track.position : i + 1,
+      name: typeof track.name === "string" && track.name.length > 0
+        ? track.name
+        : "Unknown Track",
+      rating: Number.isFinite(raw) ? raw : null,
+    };
+  });
 
-  return tracksValid && notesValid && ratedOnValid;
+  const notes = Array.isArray(src.notes)
+    ? src.notes.filter(n => typeof n === "string")
+    : [];
+
+  return {
+    type: str(src.type, "Album"),
+    title: str(src.title, "Unknown Title"),
+    artist: str(src.artist, "Unknown Artist"),
+    year: Number.isInteger(src.year) ? src.year : 0,
+    ratedOn: typeof src.ratedOn === "string" && !isNaN(Date.parse(src.ratedOn))
+      ? src.ratedOn
+      : "",
+    ratedBy: str(src.ratedBy, ""),
+    coverArt: str(src.coverArt, ""),
+    schemaVersion: Number.isInteger(src.schemaVersion) ? src.schemaVersion : 1,
+    tracks,
+    notes,
+  };
 }
 
-function renderAlbum(album) {
+function renderAlbum(receivedAlbum) {
+  const album = sanitizeAlbum(receivedAlbum);
+
   document.getElementById("empty-state").style.display = "none";
   document.querySelector(".poster").classList.remove("hidden");
 
@@ -64,6 +76,9 @@ function renderAlbum(album) {
   document.getElementById("album-ratedOn").textContent =
     album.ratedOn || "";
 
+  document.getElementById("album-ratedBy").textContent =
+    album.ratedBy || "";
+
   // overall score
   // ONLY actual numbers are included
   const rated = (album.tracks || []).filter(
@@ -79,12 +94,11 @@ function renderAlbum(album) {
 
   // tracklist
   const list = document.getElementById("tracklist");
-  list.innerHTML = "";
+  list.innerHTML = ""; // ! clear everything first
 
   (album.tracks || []).forEach(t => {
     const row = document.createElement("div");
     row.className = "track";
-
 
     const num = document.createElement("div");
     num.className = "num";
@@ -144,14 +158,10 @@ function loadJsonFile(file) {
 
   const reader = new FileReader();
 
+  reader.readAsText(file);
   reader.onload = e => {
     try {
       const data = JSON.parse(e.target.result);
-      if (!isValidAlbum(data)) {
-        alert("Invalid Json");
-        return;
-      }
-
       renderAlbum(data);
     } catch (err) {
       alert(
@@ -160,7 +170,6 @@ function loadJsonFile(file) {
       console.error(err);
     }
   };
-  reader.readAsText(file);
 }
 
 loadBtn.addEventListener("click", () => fileInput.click());
